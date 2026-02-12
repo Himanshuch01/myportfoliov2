@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # Himanshu Chauhan - Portfolio
 
 Modern, production-ready portfolio built with Next.js 15, TypeScript, Tailwind CSS, Three.js, and Framer Motion.
@@ -178,3 +179,6 @@ MIT License - feel free to use this template for your own portfolio!
 ---
 
 Built with ❤️ using Next.js and Three.js
+=======
+# myportfoliov2
+>>>>>>> 957e1a9d7321bdbb116c5f46b4f810234abd836e

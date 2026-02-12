@@ -112,49 +112,31 @@ export default function Navbar() {
         initial={{ y: -100 }}
         animate={{ y: isVisible ? 0 : -100 }}
         transition={{ duration: 0.3 }}
-        className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${isScrolled ? "glass py-2 shadow-lg" : "bg-dark-900/80 backdrop-blur-sm py-5"
+        className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${isScrolled ? "glass py-3 shadow-lg" : "bg-transparent py-6"
           }`}
       >
-        <div className={`transition-all duration-500 ${isScrolled ? "max-w-2xl mx-auto px-6" : "container-custom max-w-7xl"
-          }`}>
-          {/* Desktop Layout */}
-          <div className={`hidden md:flex transition-all duration-500 ${isScrolled
-              ? "justify-center items-center"
-              : "justify-between items-center"
-            }`}>
-
-            {/* Left: Logo + Tagline (hidden when scrolled) */}
-            {!isScrolled && (
+        <div className="container-custom max-w-7xl mx-auto">
+          <div className="flex items-center justify-between">
+            {/* Logo */}
+            <Link href="#home" onClick={(e) => handleNavClick(e, "#home")}>
               <motion.div
-                initial={{ opacity: 0, x: -20 }}
-                animate={{ opacity: 1, x: 0 }}
-                exit={{ opacity: 0, x: -20 }}
-                transition={{ duration: 0.3 }}
+                onClick={handleLogoClick}
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+                className="text-2xl font-bold cursor-pointer relative group"
               >
-                <Link href="#home" onClick={(e) => handleNavClick(e, "#home")}>
-                  <motion.div
-                    onClick={handleLogoClick}
-                    whileHover={{ scale: 1.02 }}
-                    className="cursor-pointer"
-                  >
-                    <div className="text-2xl font-bold gradient-text mb-1">HC</div>
-                    <div className="text-[10px] text-gray-400 uppercase tracking-widest">
-                      Creative Engineer
-                    </div>
-                    <div className="text-[10px] text-primary-400 font-light">Building the Future</div>
-                  </motion.div>
-                </Link>
+                <span className="gradient-text">HC</span>
+                <motion.div
+                  className="absolute -bottom-1 left-0 h-0.5 bg-gradient-primary"
+                  initial={{ width: 0 }}
+                  whileHover={{ width: "100%" }}
+                  transition={{ duration: 0.3 }}
+                />
               </motion.div>
-            )}
+            </Link>
 
-            {/* Center: Navigation */}
-            <motion.div
-              className={`flex items-center transition-all duration-500 ${isScrolled ? "gap-0 bg-white/5 rounded-full px-2 py-1" : "gap-2"
-                }`}
-              animate={{
-                scale: isScrolled ? 0.9 : 1
-              }}
-            >
+            {/* Desktop Navigation */}
+            <div className="hidden md:flex items-center gap-1">
               {navItems.map((item, index) => {
                 const isActive = activeSection === item.href.substring(1);
                 return (
@@ -162,100 +144,41 @@ export default function Navbar() {
                     key={item.name}
                     initial={{ opacity: 0, y: -20 }}
                     animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: index * 0.05 }}
+                    transition={{ delay: index * 0.1 }}
                   >
                     <Link
                       href={item.href}
                       onClick={(e) => handleNavClick(e, item.href)}
-                      className={`relative px-4 py-2 text-sm font-medium transition-all duration-300 rounded-full ${isActive
-                          ? "text-white bg-white/10"
-                          : "text-gray-300 hover:text-white hover:bg-white/5"
+                      className={`relative px-4 py-2 text-sm font-medium transition-colors group ${isActive ? "text-white" : "text-gray-300 hover:text-white"
                         }`}
                     >
                       {item.name}
-                      {isActive && (
-                        <motion.div
-                          layoutId="activeSection"
-                          className="absolute inset-0 bg-gradient-primary opacity-20 rounded-full"
-                          transition={{ type: "spring", stiffness: 380, damping: 30 }}
-                        />
-                      )}
+                      <motion.div
+                        className="absolute bottom-0 left-0 right-0 h-0.5 bg-gradient-primary"
+                        initial={{ scaleX: 0 }}
+                        animate={{ scaleX: isActive ? 1 : 0 }}
+                        whileHover={{ scaleX: 1 }}
+                        transition={{ duration: 0.3 }}
+                      />
                     </Link>
                   </motion.div>
                 );
               })}
-            </motion.div>
-
-            {/* Right: Action Buttons (hidden when scrolled) */}
-            {!isScrolled && (
-              <motion.div
-                className="flex items-center justify-end gap-3"
-                initial={{ opacity: 0, x: 20 }}
-                animate={{ opacity: 1, x: 0 }}
-                exit={{ opacity: 0, x: 20 }}
-                transition={{ duration: 0.3 }}
-              >
-                <motion.button
-                  className="p-2 glass rounded-full hover:bg-white/10 transition-colors"
-                  whileHover={{ scale: 1.1 }}
-                  whileTap={{ scale: 0.9 }}
-                  aria-label="Toggle theme"
-                >
-                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                    <circle cx="12" cy="12" r="5" />
-                    <line x1="12" y1="1" x2="12" y2="3" />
-                    <line x1="12" y1="21" x2="12" y2="23" />
-                    <line x1="4.22" y1="4.22" x2="5.64" y2="5.64" />
-                    <line x1="18.36" y1="18.36" x2="19.78" y2="19.78" />
-                    <line x1="1" y1="12" x2="3" y2="12" />
-                    <line x1="21" y1="12" x2="23" y2="12" />
-                    <line x1="4.22" y1="19.78" x2="5.64" y2="18.36" />
-                    <line x1="18.36" y1="5.64" x2="19.78" y2="4.22" />
-                  </svg>
-                </motion.button>
-                <motion.a
-                  href="#contact"
-                  onClick={(e) => handleNavClick(e, "#contact")}
-                  className="btn-primary px-5 py-2"
-                  whileHover={{ scale: 1.05 }}
-                  whileTap={{ scale: 0.95 }}
-                >
-                  Book a Call
-                </motion.a>
-                <motion.button
-                  className="p-2 glass rounded-full hover:bg-white/10 transition-colors"
-                  whileHover={{ scale: 1.1 }}
-                  whileTap={{ scale: 0.9 }}
-                  aria-label="More options"
-                >
-                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                    <circle cx="12" cy="12" r="1" />
-                    <circle cx="12" cy="5" r="1" />
-                    <circle cx="12" cy="19" r="1" />
-                  </svg>
-                </motion.button>
-              </motion.div>
-            )}
-          </div>
-
-          {/* Mobile Layout */}
-          <div className="md:hidden flex items-center justify-between">
-            {/* Logo */}
-            <Link href="#home" onClick={(e) => handleNavClick(e, "#home")}>
-              <motion.div
-                onClick={handleLogoClick}
+              <motion.a
+                href="#contact"
+                onClick={(e) => handleNavClick(e, "#contact")}
+                className="btn-primary ml-4"
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
-                className="text-2xl font-bold cursor-pointer"
               >
-                <span className="gradient-text">HC</span>
-              </motion.div>
-            </Link>
+                Let's Talk
+              </motion.a>
+            </div>
 
             {/* Mobile Menu Button */}
             <motion.button
               onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-              className="p-2 text-white"
+              className="md:hidden p-2 text-white"
               aria-label="Toggle menu"
               whileTap={{ scale: 0.9 }}
             >
