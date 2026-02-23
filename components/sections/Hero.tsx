@@ -2,259 +2,281 @@
 
 import { motion, useMotionValue, useSpring } from "framer-motion";
 import { ArrowDown, Award, Zap, Code2 } from "lucide-react";
-import TechStackNetwork from "@/components/3d/TechStackNetwork";
+import FloatingGeometry from "@/components/3d/FloatingGeometry";
 import { useEffect, useRef, useState } from "react";
 
-// Animated counter component
-function AnimatedCounter({ end, suffix = "", duration = 2 }: { end: number; suffix?: string; duration?: number }) {
+// ── Animated counter ─────────────────────────────────────────────────────────
+function AnimatedCounter({ end, suffix = "" }: { end: number; suffix?: string }) {
   const [count, setCount] = useState(0);
   const ref = useRef<HTMLDivElement>(null);
-  const [isVisible, setIsVisible] = useState(false);
+  const [seen, setSeen] = useState(false);
 
   useEffect(() => {
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        if (entry.isIntersecting && !isVisible) {
-          setIsVisible(true);
-        }
-      },
+    const obs = new IntersectionObserver(
+      ([e]) => { if (e.isIntersecting && !seen) setSeen(true); },
       { threshold: 0.5 }
     );
-
-    if (ref.current) {
-      observer.observe(ref.current);
-    }
-
-    return () => observer.disconnect();
-  }, [isVisible]);
+    if (ref.current) obs.observe(ref.current);
+    return () => obs.disconnect();
+  }, [seen]);
 
   useEffect(() => {
-    if (!isVisible) return;
-
-    let startTime: number;
-    let animationFrame: number;
-
-    const animate = (timestamp: number) => {
-      if (!startTime) startTime = timestamp;
-      const progress = Math.min((timestamp - startTime) / (duration * 1000), 1);
-
-      setCount(Math.floor(progress * end));
-
-      if (progress < 1) {
-        animationFrame = requestAnimationFrame(animate);
-      }
+    if (!seen) return;
+    let start: number, raf: number;
+    const tick = (ts: number) => {
+      if (!start) start = ts;
+      const p = Math.min((ts - start) / 1800, 1);
+      setCount(Math.floor(p * end));
+      if (p < 1) raf = requestAnimationFrame(tick);
     };
-
-    animationFrame = requestAnimationFrame(animate);
-    return () => cancelAnimationFrame(animationFrame);
-  }, [isVisible, end, duration]);
+    raf = requestAnimationFrame(tick);
+    return () => cancelAnimationFrame(raf);
+  }, [seen, end]);
 
   return (
-    <div ref={ref} className="text-2xl md:text-3xl font-bold text-white">
+    <div ref={ref} className="text-2xl font-bold bg-clip-text text-transparent
+                              bg-gradient-to-r from-indigo-500 to-purple-500">
       {count}{suffix}
     </div>
   );
 }
 
-// Magnetic button component
+// ── Magnetic CTA button ───────────────────────────────────────────────────────
 function MagneticButton({
-  children,
-  href,
-  primary = false
+  children, href, primary = false, download,
 }: {
-  children: React.ReactNode;
-  href: string;
-  primary?: boolean;
+  children: React.ReactNode; href: string; primary?: boolean; download?: boolean;
 }) {
   const ref = useRef<HTMLAnchorElement>(null);
   const x = useMotionValue(0);
   const y = useMotionValue(0);
+  const xS = useSpring(x, { damping: 15, stiffness: 150 });
+  const yS = useSpring(y, { damping: 15, stiffness: 150 });
 
-  const springConfig = { damping: 15, stiffness: 150 };
-  const xSpring = useSpring(x, springConfig);
-  const ySpring = useSpring(y, springConfig);
-
-  const handleMouseMove = (e: React.MouseEvent<HTMLAnchorElement>) => {
+  const onMove = (e: React.MouseEvent<HTMLAnchorElement>) => {
     if (!ref.current) return;
-    const rect = ref.current.getBoundingClientRect();
-    const centerX = rect.left + rect.width / 2;
-    const centerY = rect.top + rect.height / 2;
-    x.set((e.clientX - centerX) * 0.3);
-    y.set((e.clientY - centerY) * 0.3);
+    const r = ref.current.getBoundingClientRect();
+    x.set((e.clientX - (r.left + r.width / 2)) * 0.25);
+    y.set((e.clientY - (r.top + r.height / 2)) * 0.25);
   };
-
-  const handleMouseLeave = () => {
-    x.set(0);
-    y.set(0);
-  };
+  const onLeave = () => { x.set(0); y.set(0); };
 
   return (
     <motion.a
       ref={ref}
       href={href}
-      className={primary ? "btn-primary" : "btn-outline"}
-      onMouseMove={handleMouseMove}
-      onMouseLeave={handleMouseLeave}
-      style={{ x: xSpring, y: ySpring }}
+      download={download}
+      onMouseMove={onMove}
+      onMouseLeave={onLeave}
+      style={{ x: xS, y: yS }}
       whileHover={{ scale: 1.05 }}
       whileTap={{ scale: 0.95 }}
+      className={primary
+        ? "inline-flex items-center justify-center whitespace-nowrap px-7 py-3 rounded-2xl \
+           bg-gradient-to-r from-indigo-600 to-purple-600 text-white font-semibold text-sm \
+           shadow-lg shadow-indigo-500/30 hover:shadow-indigo-500/50 transition-shadow"
+        : "inline-flex items-center justify-center whitespace-nowrap px-7 py-3 rounded-2xl \
+           font-semibold text-sm transition-all border-2 border-indigo-400/40 \
+           text-indigo-600 dark:text-indigo-300 \
+           hover:bg-indigo-50 dark:hover:bg-indigo-900/20 hover:border-indigo-500"
+      }
     >
       {children}
     </motion.a>
   );
 }
 
+// ── Hero ──────────────────────────────────────────────────────────────────────
 export default function Hero() {
   return (
     <section
       id="home"
-      className="relative min-h-screen flex items-center justify-center overflow-hidden"
+      className="relative min-h-screen overflow-hidden
+                 bg-gradient-to-br from-slate-50 via-indigo-50/40 to-white
+                 dark:from-slate-950 dark:via-indigo-950/50 dark:to-slate-900"
     >
-      {/* 3D Tech Stack Network Background */}
-      <div className="absolute inset-0 z-0 opacity-60">
-        <TechStackNetwork />
+      {/* ── Ambient glow blob behind 3D ── */}
+      <div className="absolute inset-0 z-0 pointer-events-none">
+        <div className="absolute top-1/2 right-[25%] -translate-y-1/2
+                        w-[600px] h-[600px] rounded-full blur-3xl
+                        bg-indigo-400/12 dark:bg-indigo-600/18" />
       </div>
 
-      {/* Dark overlay for better text contrast */}
-      <div className="absolute inset-0 bg-dark-900/40 backdrop-blur-[1px] z-[1]" />
+      {/* ── Top & bottom section fades ── */}
+      <div className="absolute top-0 inset-x-0 h-28 z-[2] pointer-events-none
+                      bg-gradient-to-b from-slate-50 dark:from-slate-950 to-transparent" />
+      <div className="absolute bottom-0 inset-x-0 h-28 z-[2] pointer-events-none
+                      bg-gradient-to-t from-slate-50 dark:from-slate-950 to-transparent" />
 
-      {/* Content */}
-      <div className="container-custom relative z-10 px-6 py-32">
-        <div className="max-w-4xl mx-auto">
-          {/* Availability Badge */}
+      {/* ── 3D element: absolute right half, full viewport height ── */}
+      <div className="absolute inset-y-0 right-0 hidden md:block
+                      w-[50%] z-[1] pointer-events-none">
+        <FloatingGeometry />
+      </div>
+
+      {/* ── Left content: fills left half, vertically centred ── */}
+      <div className="relative z-10 min-h-screen flex items-center">
+        <div className="w-full md:w-[50%] px-8 md:px-16 lg:px-24 py-32">
+
+          {/* Status badge */}
           <motion.div
-            initial={{ opacity: 0, y: 20 }}
+            initial={{ opacity: 0, y: -10 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6 }}
-            className="flex justify-center mb-12"
+            transition={{ duration: 0.45 }}
+            className="inline-flex items-center gap-2 px-4 py-1.5 mb-8
+                       bg-emerald-500/10 dark:bg-emerald-500/15
+                       border border-emerald-400/30 rounded-full"
           >
-            <div className="inline-flex items-center gap-2 px-4 py-2 bg-secondary-500/10 rounded-full border border-secondary-500/20">
-              <div className="w-2 h-2 bg-secondary-400 rounded-full animate-pulse" />
-              <span className="text-sm font-medium text-gray-300">Available for Commercial Projects</span>
-            </div>
+            <motion.span
+              animate={{ scale: [1, 1.6, 1] }}
+              transition={{ duration: 2, repeat: Infinity }}
+              className="w-2 h-2 rounded-full bg-emerald-400"
+            />
+            <span className="text-xs font-semibold tracking-wide
+                             text-emerald-600 dark:text-emerald-300">
+              Available for Opportunities
+            </span>
           </motion.div>
 
-          {/* Main Content */}
-          <div className="text-center space-y-6">
-            {/* Main Heading */}
-            <motion.h1
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6, delay: 0.1 }}
-              className="text-5xl md:text-7xl lg:text-8xl font-bold text-white mb-4"
-            >
-              Himanshu Chauhan
-            </motion.h1>
-
-            {/* Subheading */}
-            <motion.h2
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6, delay: 0.2 }}
-              className="text-xl md:text-2xl lg:text-3xl font-medium text-gray-300 mb-6"
-            >
-              Full-Stack Engineer | MERN Specialist | AI Product Builder
-            </motion.h2>
-
-            {/* Tagline */}
-            <motion.p
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6, delay: 0.3 }}
-              className="text-base md:text-lg text-gray-400 max-w-2xl mx-auto leading-relaxed"
-            >
-              Building production-grade applications that{" "}
-              <span className="text-secondary-400 font-medium">ship</span>,{" "}
-              <span className="text-primary-400 font-medium">scale</span>, and create{" "}
-              <span className="text-accent-400 font-medium">real-world impact</span>
-            </motion.p>
-
-            {/* CTA Buttons */}
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6, delay: 0.4 }}
-              className="flex flex-col sm:flex-row gap-4 justify-center items-center pt-8 pb-12"
-            >
-              <MagneticButton href="#projects" primary>
-                View Commercial Projects
-              </MagneticButton>
-              <MagneticButton href="/resume.pdf">
-                Download Resume
-              </MagneticButton>
-            </motion.div>
-
-            {/* Simple Technical Badges */}
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ duration: 0.6, delay: 0.5 }}
-              className="flex flex-wrap gap-3 justify-center items-center py-6"
-            >
-              {[
-                { icon: Award, text: "Commercial Experience" },
-                { icon: Code2, text: "MERN Stack Expert" },
-                { icon: Zap, text: "AI Integration" },
-              ].map((badge, index) => (
-                <motion.div
-                  key={badge.text}
-                  initial={{ opacity: 0, scale: 0.9 }}
-                  animate={{ opacity: 1, scale: 1 }}
-                  transition={{ delay: 0.6 + index * 0.1 }}
-                  className="flex items-center gap-2 px-4 py-2 bg-white/5 rounded-lg border border-white/10 hover:bg-white/10 transition-colors"
-                >
-                  <badge.icon size={16} className="text-primary-400" />
-                  <span className="text-sm text-gray-300">{badge.text}</span>
-                </motion.div>
-              ))}
-            </motion.div>
-          </div>
-
-          {/* Hero Stats - Simplified */}
-          <motion.div
-            initial={{ opacity: 0, y: 30 }}
+          {/* Name */}
+          <motion.h1
+            initial={{ opacity: 0, y: 28 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 0.7 }}
-            className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6 max-w-3xl mx-auto mt-16"
+            transition={{ duration: 0.6, delay: 0.1 }}
+            className="font-black tracking-tight leading-[1.05] mb-5
+                       text-5xl sm:text-6xl lg:text-7xl xl:text-8xl"
+            style={{ color: "rgb(var(--text-primary))" }}
+          >
+            Himanshu
+            <br />
+            <span className="bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500
+                             bg-clip-text text-transparent">
+              Chauhan
+            </span>
+          </motion.h1>
+
+          {/* Roles — horizontal chips */}
+          <motion.div
+            initial={{ opacity: 0, y: 16 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.55, delay: 0.2 }}
+            className="flex flex-wrap gap-2 mb-5"
+          >
+            {["Full-Stack Engineer", "MERN Specialist", "AI Product Builder"].map((role) => (
+              <span
+                key={role}
+                className="px-3 py-1 rounded-lg text-sm font-medium
+                           bg-indigo-50 dark:bg-indigo-900/30
+                           text-indigo-700 dark:text-indigo-300
+                           border border-indigo-200/60 dark:border-indigo-700/40"
+              >
+                {role}
+              </span>
+            ))}
+          </motion.div>
+
+          {/* Tagline */}
+          <motion.p
+            initial={{ opacity: 0, y: 16 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.55, delay: 0.28 }}
+            className="text-sm md:text-base leading-relaxed mb-8 max-w-sm"
+            style={{ color: "rgb(var(--text-tertiary))" }}
+          >
+            Building production-grade apps that{" "}
+            <span className="text-emerald-500 font-semibold">ship</span>,{" "}
+            <span className="text-indigo-500 font-semibold">scale</span>, and create{" "}
+            <span className="text-amber-500 font-semibold">real-world impact</span>.
+          </motion.p>
+
+          {/* CTA buttons */}
+          <motion.div
+            initial={{ opacity: 0, y: 16 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.55, delay: 0.36 }}
+            className="flex flex-row gap-3 mb-10"
+          >
+            <MagneticButton href="#projects" primary>View Projects</MagneticButton>
+            <MagneticButton href="/resume.pdf" download>Resume</MagneticButton>
+          </motion.div>
+
+          {/* Keyword badges */}
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 0.55, delay: 0.44 }}
+            className="flex flex-wrap gap-2 mb-10"
           >
             {[
-              { end: 249, suffix: "+", label: "GitHub Contributions" },
-              { end: 5, suffix: "+", label: "Production Apps" },
-              { end: 3, suffix: "+", label: "Business Clients" },
-              { end: 2, suffix: "+", label: "Years Experience" },
-            ].map((stat, index) => (
-              <motion.div
-                key={stat.label}
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.8 + index * 0.1 }}
-                className="text-center p-4 bg-white/5 rounded-lg border border-white/10 hover:bg-white/10 transition-colors"
+              { icon: Award, text: "Commercial Experience" },
+              { icon: Code2, text: "MERN Stack" },
+              { icon: Zap, text: "AI Integration" },
+            ].map((b, i) => (
+              <motion.span
+                key={b.text}
+                initial={{ opacity: 0, scale: 0.88 }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{ delay: 0.5 + i * 0.07 }}
+                className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl glass
+                           hover:ring-1 hover:ring-indigo-400/30 transition-all cursor-default"
               >
-                <AnimatedCounter end={stat.end} suffix={stat.suffix} />
-                <div className="text-xs md:text-sm text-gray-400 mt-2">
-                  {stat.label}
+                <b.icon size={13} className="text-indigo-500" />
+                <span className="text-xs font-medium" style={{ color: "rgb(var(--text-secondary))" }}>
+                  {b.text}
+                </span>
+              </motion.span>
+            ))}
+          </motion.div>
+
+          {/* Stats row */}
+          <motion.div
+            initial={{ opacity: 0, y: 16 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.55, delay: 0.6 }}
+            className="grid grid-cols-4 gap-2 max-w-sm"
+          >
+            {[
+              { end: 249, suffix: "+", label: "GitHub\nContributions" },
+              { end: 5, suffix: "+", label: "Production\nApps" },
+              { end: 3, suffix: "+", label: "Business\nClients" },
+              { end: 2, suffix: "+", label: "Years\nExperience" },
+            ].map((s, i) => (
+              <motion.div
+                key={s.label}
+                initial={{ opacity: 0, y: 12 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.7 + i * 0.07 }}
+                className="flex flex-col items-center text-center py-3 px-1
+                           rounded-2xl glass hover:ring-1 hover:ring-indigo-400/30 transition-all"
+              >
+                <AnimatedCounter end={s.end} suffix={s.suffix} />
+                <div className="text-[10px] mt-1 leading-tight whitespace-pre-line"
+                  style={{ color: "rgb(var(--text-tertiary))" }}>
+                  {s.label}
                 </div>
               </motion.div>
             ))}
           </motion.div>
+
         </div>
       </div>
 
-      {/* Scroll Indicator */}
+      {/* Scroll indicator */}
       <motion.a
         href="#about"
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
-        transition={{ delay: 1 }}
-        className="absolute bottom-8 left-1/2 -translate-x-1/2 z-10"
+        transition={{ delay: 1.2 }}
+        className="absolute bottom-8 left-[25%] -translate-x-1/2 z-10
+                   flex flex-col items-center gap-1 transition-colors"
+        style={{ color: "rgb(var(--text-tertiary))" }}
       >
+        <span className="text-[10px] font-medium tracking-widest uppercase">Scroll</span>
         <motion.div
-          animate={{ y: [0, 8, 0] }}
-          transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
-          className="flex flex-col items-center gap-2 text-gray-500 hover:text-gray-300 transition-colors cursor-pointer"
+          animate={{ y: [0, 5, 0] }}
+          transition={{ duration: 1.8, repeat: Infinity, ease: "easeInOut" }}
         >
-          <span className="text-xs font-medium">Scroll Down</span>
-          <ArrowDown size={20} />
+          <ArrowDown size={15} />
         </motion.div>
       </motion.a>
     </section>

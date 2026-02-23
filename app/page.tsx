@@ -7,14 +7,16 @@ import GitHub from "@/components/sections/GitHub";
 import Contact from "@/components/sections/Contact";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
+import ThemeBulb from "@/components/ThemeBulb";
 
 export default function Home() {
   return (
     <main className="relative overflow-hidden">
-      {/* Background gradient mesh */}
-      <div className="fixed inset-0 bg-mesh opacity-30 pointer-events-none" />
-      <div className="fixed inset-0 noise-overlay pointer-events-none" />
+      {/* Background gradient mesh - Subtle & Modern */}
+      <div className="fixed inset-0 bg-gradient-to-br from-indigo-50 via-purple-50 to-pink-50 dark:from-slate-900 dark:via-indigo-950 dark:to-slate-900 opacity-50 dark:opacity-70 pointer-events-none" />
+      <div className="fixed inset-0 noise-overlay pointer-events-none opacity-30" />
 
+      <ThemeBulb />
       <Navbar />
 
       <div className="relative z-10">
