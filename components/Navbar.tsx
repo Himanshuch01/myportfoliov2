@@ -2,247 +2,169 @@
 
 import { useState, useEffect } from "react";
 import Link from "next/link";
-import { motion, AnimatePresence, useScroll, useTransform } from "framer-motion";
-import { Menu, X, ArrowUp } from "lucide-react";
+import { motion, AnimatePresence, useScroll } from "framer-motion";
+import { Home, User, Briefcase, Layers, GitBranch, Mail, Cpu } from "lucide-react";
+import ThemeBulb from "./ThemeBulb";
 
 const navItems = [
-  { name: "About", href: "#about" },
-  { name: "Projects", href: "#projects" },
-  { name: "Skills", href: "#skills" },
-  { name: "Experience", href: "#experience" },
-  { name: "GitHub", href: "#github" },
-  { name: "Contact", href: "#contact" },
+  { name: "Home", href: "#home", icon: Home },
+  { name: "About", href: "#about", icon: User },
+  { name: "Projects", href: "#projects", icon: Briefcase },
+  { name: "Skills", href: "#skills", icon: Layers },
+  { name: "Experience", href: "#experience", icon: Cpu },
+  { name: "GitHub", href: "#github", icon: GitBranch },
+  { name: "Contact", href: "#contact", icon: Mail },
 ];
 
 export default function Navbar() {
-  const [isScrolled, setIsScrolled] = useState(false);
-  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [activeSection, setActiveSection] = useState("home");
-  const [isVisible, setIsVisible] = useState(true);
-  const [lastScrollY, setLastScrollY] = useState(0);
-  const [showBackToTop, setShowBackToTop] = useState(false);
-  const [logoClicks, setLogoClicks] = useState(0);
-
+  const [atTop, setAtTop] = useState(true);   // true = at very top of page
+  const [tooltip, setTooltip] = useState<string | null>(null);
   const { scrollYProgress } = useScroll();
 
-  // Handle scroll for nav visibility and active section
+  // Track scroll position & active section
   useEffect(() => {
-    let ticking = false;
+    const onScroll = () => {
+      const y = window.scrollY;
+      setAtTop(y < 80);
 
-    const handleScroll = () => {
-      if (!ticking) {
-        window.requestAnimationFrame(() => {
-          const currentScrollY = window.scrollY;
-
-          // Update scroll state
-          setIsScrolled(currentScrollY > 50);
-          setShowBackToTop(currentScrollY > 500);
-
-          // Hide/show navbar based on scroll direction
-          if (currentScrollY > lastScrollY && currentScrollY > 100) {
-            setIsVisible(false);
-          } else {
-            setIsVisible(true);
-          }
-          setLastScrollY(currentScrollY);
-
-          // Update active section
-          const sections = navItems.map((item) => item.href.substring(1));
-          sections.unshift("home");
-
-          for (let i = sections.length - 1; i >= 0; i--) {
-            const section = document.getElementById(sections[i]);
-            if (section) {
-              const rect = section.getBoundingClientRect();
-              if (rect.top <= 150) {
-                setActiveSection(sections[i]);
-                break;
-              }
-            }
-          }
-
-          ticking = false;
-        });
-        ticking = true;
+      // Active section detection
+      const sections = ["home", ...navItems.slice(1).map(i => i.href.substring(1))];
+      for (let i = sections.length - 1; i >= 0; i--) {
+        const el = document.getElementById(sections[i]);
+        if (el && el.getBoundingClientRect().top <= 160) {
+          setActiveSection(sections[i]);
+          break;
+        }
       }
     };
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
+  }, []);
 
-    window.addEventListener("scroll", handleScroll, { passive: true });
-    return () => window.removeEventListener("scroll", handleScroll);
-  }, [lastScrollY]);
-
-  // Handle smooth scroll
-  const handleNavClick = (e: React.MouseEvent<HTMLAnchorElement>, href: string) => {
+  const handleClick = (e: React.MouseEvent<HTMLAnchorElement>, href: string) => {
     e.preventDefault();
-    const target = document.querySelector(href);
-    if (target) {
-      target.scrollIntoView({ behavior: "smooth", block: "start" });
-      setIsMobileMenuOpen(false);
-    }
+    document.querySelector(href)?.scrollIntoView({ behavior: "smooth" });
   };
 
-  // Handle logo clicks (easter egg)
-  const handleLogoClick = () => {
-    setLogoClicks((prev) => prev + 1);
-    if (logoClicks + 1 === 5) {
-      // Trigger special animation
-      document.body.classList.add("party-mode");
-      setTimeout(() => {
-        document.body.classList.remove("party-mode");
-        setLogoClicks(0);
-      }, 3000);
-    }
-  };
-
-  // Back to top
-  const scrollToTop = () => {
-    window.scrollTo({ top: 0, behavior: "smooth" });
-  };
+  // When at top → bottom-right pill   |   When scrolled → right-center pill
+  const positionClass = atTop
+    ? "fixed bottom-8 right-6 z-50"
+    : "fixed right-6 top-1/2 -translate-y-1/2 z-50";
 
   return (
     <>
-      {/* Scroll Progress Bar */}
+      {/* ── Scroll progress bar at top ── */}
       <motion.div
-        className="fixed top-0 left-0 right-0 h-1 bg-gradient-to-r from-primary-500 via-secondary-500 to-accent-500 origin-left z-[60]"
+        className="fixed top-0 left-0 right-0 h-[2px] bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 origin-left z-[60]"
         style={{ scaleX: scrollYProgress }}
       />
 
-      {/* Navigation Bar */}
-      <motion.nav
-        initial={{ y: -100 }}
-        animate={{ y: isVisible ? 0 : -100 }}
-        transition={{ duration: 0.3 }}
-        className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${isScrolled ? "glass py-3 shadow-lg" : "bg-transparent py-6"
-          }`}
+      {/* ── Minimal logo (top-left) ── */}
+      <motion.div
+        initial={{ opacity: 0, x: -20 }}
+        animate={{ opacity: 1, x: 0 }}
+        transition={{ duration: 0.4 }}
+        className="fixed top-5 left-6 z-50"
       >
-        <div className="container-custom max-w-7xl mx-auto">
-          <div className="flex items-center justify-between">
-            {/* Logo */}
-            <Link href="#home" onClick={(e) => handleNavClick(e, "#home")}>
-              <motion.div
-                onClick={handleLogoClick}
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
-                className="text-2xl font-bold cursor-pointer relative group"
-              >
-                <span className="gradient-text">HC</span>
-                <motion.div
-                  className="absolute -bottom-1 left-0 h-0.5 bg-gradient-primary"
-                  initial={{ width: 0 }}
-                  whileHover={{ width: "100%" }}
-                  transition={{ duration: 0.3 }}
-                />
-              </motion.div>
-            </Link>
+        <Link
+          href="#home"
+          onClick={(e) => handleClick(e, "#home")}
+          className="text-xl font-black gradient-text select-none"
+        >
+          HC
+        </Link>
+      </motion.div>
 
-            {/* Desktop Navigation */}
-            <div className="hidden md:flex items-center gap-1">
-              {navItems.map((item, index) => {
-                const isActive = activeSection === item.href.substring(1);
-                return (
-                  <motion.div
-                    key={item.name}
-                    initial={{ opacity: 0, y: -20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: index * 0.1 }}
-                  >
-                    <Link
-                      href={item.href}
-                      onClick={(e) => handleNavClick(e, item.href)}
-                      className={`relative px-4 py-2 text-sm font-medium transition-colors group ${isActive ? "text-white" : "text-gray-300 hover:text-white"
-                        }`}
+      {/* ── Theme toggle (top-right, always visible) ── */}
+      <div className="fixed top-4 right-6 z-50">
+        <ThemeBulb />
+      </div>
+
+      {/* ── Capsule Nav ── */}
+      <motion.div
+        layout
+        initial={{ opacity: 0, scale: 0.8 }}
+        animate={{ opacity: 1, scale: 1 }}
+        transition={{ duration: 0.4, layout: { type: "spring", stiffness: 260, damping: 28 } }}
+        className={positionClass}
+      >
+        <motion.nav
+          layout
+          className="flex flex-col items-center gap-1 px-2 py-3 rounded-3xl
+                     backdrop-blur-xl border shadow-2xl
+                     bg-white/70 dark:bg-slate-900/70
+                     border-white/40 dark:border-slate-700/50
+                     shadow-indigo-500/10"
+        >
+          {navItems.map((item) => {
+            const isActive = activeSection === item.href.substring(1) ||
+              (item.href === "#home" && activeSection === "home");
+            return (
+              <div key={item.name} className="relative group">
+                <Link
+                  href={item.href}
+                  onClick={(e) => handleClick(e, item.href)}
+                  onMouseEnter={() => setTooltip(item.name)}
+                  onMouseLeave={() => setTooltip(null)}
+                  aria-label={item.name}
+                  className={`relative flex items-center justify-center w-9 h-9 rounded-2xl transition-all duration-200
+                    ${isActive
+                      ? "bg-indigo-500 text-white shadow-lg shadow-indigo-500/40"
+                      : "text-slate-500 dark:text-slate-400 hover:bg-indigo-50 dark:hover:bg-indigo-900/30 hover:text-indigo-600 dark:hover:text-indigo-400"
+                    }`}
+                >
+                  <item.icon size={16} strokeWidth={isActive ? 2.5 : 2} />
+                  {isActive && (
+                    <motion.div
+                      layoutId="navPill"
+                      className="absolute inset-0 rounded-2xl bg-indigo-500 -z-10"
+                      transition={{ type: "spring", stiffness: 350, damping: 30 }}
+                    />
+                  )}
+                </Link>
+
+                {/* Tooltip on hover */}
+                <AnimatePresence>
+                  {tooltip === item.name && (
+                    <motion.div
+                      initial={{ opacity: 0, x: 6 }}
+                      animate={{ opacity: 1, x: 0 }}
+                      exit={{ opacity: 0, x: 6 }}
+                      transition={{ duration: 0.15 }}
+                      className="absolute right-12 top-1/2 -translate-y-1/2
+                                 px-2.5 py-1 rounded-lg text-xs font-medium
+                                 bg-slate-900 dark:bg-slate-700 text-white
+                                 whitespace-nowrap pointer-events-none shadow-lg"
                     >
                       {item.name}
-                      <motion.div
-                        className="absolute bottom-0 left-0 right-0 h-0.5 bg-gradient-primary"
-                        initial={{ scaleX: 0 }}
-                        animate={{ scaleX: isActive ? 1 : 0 }}
-                        whileHover={{ scaleX: 1 }}
-                        transition={{ duration: 0.3 }}
-                      />
-                    </Link>
-                  </motion.div>
-                );
-              })}
-              <motion.a
-                href="#contact"
-                onClick={(e) => handleNavClick(e, "#contact")}
-                className="btn-primary ml-4"
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
-              >
-                Let's Talk
-              </motion.a>
-            </div>
+                      <div className="absolute right-[-4px] top-1/2 -translate-y-1/2
+                                      border-4 border-transparent border-l-slate-900
+                                      dark:border-l-slate-700" />
+                    </motion.div>
+                  )}
+                </AnimatePresence>
+              </div>
+            );
+          })}
 
-            {/* Mobile Menu Button */}
-            <motion.button
-              onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-              className="md:hidden p-2 text-white"
-              aria-label="Toggle menu"
-              whileTap={{ scale: 0.9 }}
-            >
-              {isMobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
-            </motion.button>
-          </div>
+          {/* Divider */}
+          <div className="w-5 h-px bg-slate-200 dark:bg-slate-700 my-1" />
 
-          {/* Mobile Menu */}
-          <AnimatePresence>
-            {isMobileMenuOpen && (
-              <motion.div
-                initial={{ opacity: 0, height: 0 }}
-                animate={{ opacity: 1, height: "auto" }}
-                exit={{ opacity: 0, height: 0 }}
-                className="md:hidden mt-4 glass rounded-2xl overflow-hidden"
-              >
-                <div className="flex flex-col p-4 space-y-2">
-                  {navItems.map((item) => {
-                    const isActive = activeSection === item.href.substring(1);
-                    return (
-                      <Link
-                        key={item.name}
-                        href={item.href}
-                        onClick={(e) => handleNavClick(e, item.href)}
-                        className={`py-2 px-4 rounded-lg transition-colors ${isActive
-                          ? "bg-white/10 text-white"
-                          : "text-gray-300 hover:text-white hover:bg-white/5"
-                          }`}
-                      >
-                        {item.name}
-                      </Link>
-                    );
-                  })}
-                  <a
-                    href="#contact"
-                    onClick={(e) => handleNavClick(e, "#contact")}
-                    className="btn-primary text-center mt-2"
-                  >
-                    Let's Talk
-                  </a>
-                </div>
-              </motion.div>
-            )}
-          </AnimatePresence>
-        </div>
-      </motion.nav>
-
-      {/* Back to Top Button */}
-      <AnimatePresence>
-        {showBackToTop && (
-          <motion.button
-            initial={{ opacity: 0, scale: 0 }}
-            animate={{ opacity: 1, scale: 1 }}
-            exit={{ opacity: 0, scale: 0 }}
-            onClick={scrollToTop}
-            className="fixed bottom-8 right-8 z-50 p-4 bg-gradient-primary rounded-full shadow-lg hover:shadow-xl transition-shadow"
-            whileHover={{ scale: 1.1 }}
-            whileTap={{ scale: 0.9 }}
-            aria-label="Back to top"
+          {/* Contact shortcut button */}
+          <Link
+            href="#contact"
+            onClick={(e) => handleClick(e, "#contact")}
+            aria-label="Let's Talk"
+            className="flex items-center justify-center w-9 h-9 rounded-2xl
+                       bg-gradient-to-br from-indigo-600 to-purple-600
+                       text-white shadow-md shadow-indigo-500/30
+                       hover:shadow-indigo-500/50 transition-shadow"
           >
-            <ArrowUp size={24} className="text-white" />
-          </motion.button>
-        )}
-      </AnimatePresence>
+            <Mail size={14} />
+          </Link>
+        </motion.nav>
+      </motion.div>
     </>
   );
 }
