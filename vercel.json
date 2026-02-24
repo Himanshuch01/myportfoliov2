@@ -2,7 +2,12 @@
   "redirects": [
     {
       "source": "/resume",
-      "destination": "/resume.pdf",
+      "destination": "https://drive.google.com/file/d/1lSWuDZT8Xzi8lpMM9yoycfTi1Tv7TeDR/view?usp=sharing",
+      "permanent": false
+    },
+    {
+      "source": "/resume.pdf",
+      "destination": "https://drive.google.com/file/d/1lSWuDZT8Xzi8lpMM9yoycfTi1Tv7TeDR/view?usp=sharing",
       "permanent": false
     }
   ],

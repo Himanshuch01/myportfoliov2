@@ -55,18 +55,33 @@ export default function Contact() {
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
+  const [errorMsg, setErrorMsg] = useState("");
   const [copiedEmail, setCopiedEmail] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsSubmitting(true);
-    await new Promise((r) => setTimeout(r, 1800));
-    setIsSubmitting(false);
-    setIsSuccess(true);
-    setTimeout(() => {
+    setErrorMsg("");
+
+    try {
+      const res = await fetch("/api/contact", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(formData),
+      });
+
+      const data = await res.json();
+
+      if (!res.ok) throw new Error(data.error || "Something went wrong.");
+
+      setIsSuccess(true);
       setFormData({ name: "", email: "", projectType: "", message: "" });
-      setIsSuccess(false);
-    }, 3500);
+      setTimeout(() => setIsSuccess(false), 5000);
+    } catch (err: unknown) {
+      setErrorMsg(err instanceof Error ? err.message : "Failed to send. Please try again.");
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   const handleChange = (
@@ -198,8 +213,9 @@ export default function Contact() {
 
             {/* Resume download */}
             <motion.a
-              href="/resume.pdf"
-              download
+              href="https://drive.google.com/file/d/1lSWuDZT8Xzi8lpMM9yoycfTi1Tv7TeDR/view?usp=sharing"
+              target="_blank"
+              rel="noopener noreferrer"
               initial={{ opacity: 0, y: 12 }}
               animate={isInView ? { opacity: 1, y: 0 } : {}}
               transition={{ delay: 0.5 }}
@@ -210,7 +226,7 @@ export default function Contact() {
                          hover:bg-indigo-500 hover:text-white hover:border-indigo-500"
             >
               <Sparkles size={15} />
-              Download Resume
+              View Resume
             </motion.a>
           </motion.div>
 
@@ -352,9 +368,20 @@ export default function Contact() {
                   <motion.p
                     initial={{ opacity: 0, y: 6 }}
                     animate={{ opacity: 1, y: 0 }}
-                    className="text-center text-xs text-emerald-500"
+                    className="text-center text-xs text-emerald-500 flex items-center justify-center gap-1.5"
                   >
-                    Thanks! I'll get back to you within 24–48 hours.
+                    <CheckCircle size={13} />
+                    Message sent! I'll get back to you within 24–48 hours.
+                  </motion.p>
+                )}
+
+                {errorMsg && (
+                  <motion.p
+                    initial={{ opacity: 0, y: 6 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    className="text-center text-xs text-red-500"
+                  >
+                    ⚠️ {errorMsg}
                   </motion.p>
                 )}
               </form>
