@@ -52,6 +52,7 @@ function MagneticButton({
   const y = useMotionValue(0);
   const xS = useSpring(x, { damping: 15, stiffness: 150 });
   const yS = useSpring(y, { damping: 15, stiffness: 150 });
+  const isExternal = href.startsWith("http");
 
   const onMove = (e: React.MouseEvent<HTMLAnchorElement>) => {
     if (!ref.current) return;
@@ -66,6 +67,8 @@ function MagneticButton({
       ref={ref}
       href={href}
       download={download}
+      target={isExternal ? "_blank" : undefined}
+      rel={isExternal ? "noopener noreferrer" : undefined}
       onMouseMove={onMove}
       onMouseLeave={onLeave}
       style={{ x: xS, y: yS }}
@@ -197,7 +200,7 @@ export default function Hero() {
             className="flex flex-row gap-3 mb-10"
           >
             <MagneticButton href="#projects" primary>View Projects</MagneticButton>
-            <MagneticButton href="/resume.pdf" download>Resume</MagneticButton>
+            <MagneticButton href="https://drive.google.com/file/d/1lSWuDZT8Xzi8lpMM9yoycfTi1Tv7TeDR/view?usp=sharing">Resume</MagneticButton>
           </motion.div>
 
           {/* Keyword badges */}

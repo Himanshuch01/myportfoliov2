@@ -250,8 +250,9 @@ export default function About() {
 
             {/* Download Resume */}
             <motion.a
-              href="/resume.pdf"
-              download
+              href="https://drive.google.com/file/d/1lSWuDZT8Xzi8lpMM9yoycfTi1Tv7TeDR/view?usp=sharing"
+              target="_blank"
+              rel="noopener noreferrer"
               whileHover={{ scale: 1.04 }}
               whileTap={{ scale: 0.96 }}
               className="inline-flex items-center gap-2.5 px-6 py-3 rounded-2xl font-semibold text-sm
@@ -259,7 +260,7 @@ export default function About() {
                          shadow-lg shadow-indigo-500/25 hover:shadow-indigo-500/40 transition-shadow"
             >
               <Download size={16} />
-              Download Resume
+              View Resume
             </motion.a>
 
             {/* What Sets Me Apart — horizontal 2×2 */}
