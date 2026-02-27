@@ -2,7 +2,7 @@
 
 import { motion, useInView } from "framer-motion";
 import { useRef, useState } from "react";
-import { ExternalLink, Github, Star, Rocket, Briefcase, Code2, CheckCircle, TrendingUp } from "lucide-react";
+import { ExternalLink, Star, Rocket, Briefcase, Code2, CheckCircle } from "lucide-react";
 
 // Project categories
 type Category = "all" | "commercial" | "startup" | "demo";
@@ -210,13 +210,14 @@ function ProjectCard({
           )}
         </div>
 
-        {/* Project Icon/Image */}
-        <div className="text-6xl mb-4 group-hover:scale-110 transition-transform">
-          {project.image}
+        {/* Project initial indicator */}
+        <div className="w-10 h-10 rounded-lg flex items-center justify-center mb-4
+                        text-sm font-bold text-white bg-indigo-600 select-none flex-shrink-0">
+          {project.title.charAt(0)}
         </div>
 
         {/* Title */}
-        <h3 className="heading-4 mb-2 group-hover:text-gradient-primary transition-all">
+        <h3 className="heading-4 mb-2" style={{ color: "rgb(var(--text-primary))" }}>
           {project.title}
         </h3>
         <p className="text-sm text-gray-400 mb-4">{project.subtitle}</p>
@@ -225,16 +226,6 @@ function ProjectCard({
         <p className="text-gray-400 text-sm mb-4 leading-relaxed">
           {project.description}
         </p>
-
-        {/* Impact */}
-        {project.impact && (
-          <div className="flex items-start gap-2 mb-4 p-3 glass-dark rounded-lg">
-            <TrendingUp size={16} className="text-accent-400 mt-0.5 flex-shrink-0" />
-            <p className="text-xs text-gray-300">
-              <span className="font-semibold text-accent-400">Impact:</span> {project.impact}
-            </p>
-          </div>
-        )}
 
         {/* Features (if expanded or featured) */}
         {(isExpanded || project.featured) && project.features.length > 0 && (
@@ -260,7 +251,10 @@ function ProjectCard({
           {project.tech.map((tech) => (
             <span
               key={tech}
-              className="px-2 py-1 text-xs glass rounded-full text-primary-400 hover:bg-white/10 transition-colors"
+              className="px-2 py-1 text-xs rounded
+                         text-slate-500 dark:text-slate-400
+                         bg-slate-100 dark:bg-slate-800/60
+                         border border-slate-200 dark:border-slate-700"
             >
               {tech}
             </span>
@@ -283,23 +277,8 @@ function ProjectCard({
               Visit Live Site
             </motion.a>
           )}
-          {project.featured && (
-            <motion.button
-              className="px-4 py-2 btn-outline text-sm flex items-center gap-2"
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
-              onClick={(e) => {
-                e.stopPropagation();
-                setIsExpanded(!isExpanded);
-              }}
-            >
-              {isExpanded ? "Less Info" : "Case Study"}
-            </motion.button>
-          )}
         </div>
 
-        {/* Hover Glow Effect */}
-        <div className="absolute inset-0 rounded-2xl bg-gradient-primary opacity-0 group-hover:opacity-10 transition-opacity pointer-events-none -z-10" />
       </motion.div>
     </motion.div>
   );
@@ -353,7 +332,7 @@ export default function Projects() {
                 transition={{ delay: index * 0.1 }}
                 onClick={() => setActiveFilter(category.id)}
                 className={`px-4 py-2 rounded-full font-medium text-sm flex items-center gap-2 transition-all ${activeFilter === category.id
-                  ? "bg-gradient-primary text-white shadow-lg shadow-primary-500/50"
+                  ? "bg-indigo-600 text-white"
                   : "glass hover:bg-white/10"
                   }`}
                 whileHover={{ scale: 1.05 }}
@@ -396,58 +375,6 @@ export default function Projects() {
           </motion.div>
         )}
 
-        {/* Stats Summary */}
-        <motion.div
-          initial={{ opacity: 0, y: 30 }}
-          animate={isInView ? { opacity: 1, y: 0 } : {}}
-          transition={{ delay: 0.8 }}
-          className="grid grid-cols-2 md:grid-cols-4 gap-6 max-w-4xl mx-auto"
-        >
-          {[
-            { label: "Commercial Projects", value: "3", icon: Briefcase },
-            { label: "Startup Projects", value: "3", icon: Rocket },
-            { label: "Live & Active", value: "4", icon: CheckCircle },
-            { label: "Tech Stack Items", value: "15+", icon: Code2 },
-          ].map((stat, index) => (
-            <motion.div
-              key={stat.label}
-              initial={{ opacity: 0, scale: 0.9 }}
-              animate={isInView ? { opacity: 1, scale: 1 } : {}}
-              transition={{ delay: 1 + index * 0.1 }}
-              className="card text-center group"
-              whileHover={{ scale: 1.05, y: -5 }}
-            >
-              <div className="inline-flex items-center justify-center w-12 h-12 rounded-full bg-gradient-primary mb-3 group-hover:scale-110 transition-transform">
-                <stat.icon size={20} />
-              </div>
-              <div className="text-2xl font-bold gradient-text mb-1">
-                {stat.value}
-              </div>
-              <div className="text-xs text-gray-400">{stat.label}</div>
-            </motion.div>
-          ))}
-        </motion.div>
-
-        {/* CTA */}
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={isInView ? { opacity: 1 } : {}}
-          transition={{ delay: 1.2 }}
-          className="text-center mt-12"
-        >
-          <p className="text-gray-400 mb-4">
-            Want to see more or discuss a project?
-          </p>
-          <motion.a
-            href="#contact"
-            className="btn-primary inline-flex items-center gap-2"
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
-          >
-            <Briefcase size={20} />
-            Let's Work Together
-          </motion.a>
-        </motion.div>
       </div>
 
       {/* Decorative Elements */}

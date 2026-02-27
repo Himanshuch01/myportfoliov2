@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { motion } from "framer-motion";
-import { Github, Linkedin, Mail, Twitter, ArrowUpRight, Heart, Code2, Terminal } from "lucide-react";
+import { Github, Linkedin, Mail, Twitter, ArrowUpRight, Code2, Terminal } from "lucide-react";
 import { useState, useEffect } from "react";
 
 const socialLinks = [
@@ -116,7 +116,6 @@ export default function Footer() {
             </div>
             <pre className="text-emerald-400 whitespace-pre-wrap leading-5">
               {terminalText}
-              <span className="animate-pulse text-indigo-400">▌</span>
             </pre>
           </motion.div>
         </div>
@@ -241,8 +240,8 @@ export default function Footer() {
           </p>
 
           <div className="flex items-center gap-4">
-            <p className="text-xs flex items-center gap-1.5" style={{ color: "rgb(var(--text-tertiary))" }}>
-              Crafted with <Heart size={11} className="text-red-400 fill-red-400" /> &amp; lots of coffee
+            <p className="text-xs" style={{ color: "rgb(var(--text-tertiary))" }}>
+              Built with Next.js, TypeScript &amp; too many late nights.
             </p>
           </div>
         </div>

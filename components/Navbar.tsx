@@ -56,7 +56,7 @@ export default function Navbar() {
     <>
       {/* ── Scroll progress bar at top ── */}
       <motion.div
-        className="fixed top-0 left-0 right-0 h-[2px] bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 origin-left z-[60]"
+        className="fixed top-0 left-0 right-0 h-[2px] bg-indigo-500 origin-left z-[60]"
         style={{ scaleX: scrollYProgress }}
       />
 
@@ -157,9 +157,8 @@ export default function Navbar() {
             onClick={(e) => handleClick(e, "#contact")}
             aria-label="Let's Talk"
             className="flex items-center justify-center w-9 h-9 rounded-2xl
-                       bg-gradient-to-br from-indigo-600 to-purple-600
-                       text-white shadow-md shadow-indigo-500/30
-                       hover:shadow-indigo-500/50 transition-shadow"
+                       bg-indigo-600 hover:bg-indigo-700
+                       text-white shadow-sm transition-colors duration-200"
           >
             <Mail size={14} />
           </Link>

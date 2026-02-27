@@ -1,10 +1,10 @@
 "use client";
 
 import { motion, useInView, useScroll, useTransform } from "framer-motion";
-import { useRef, useState } from "react";
+import { useRef } from "react";
 import {
   Briefcase, Rocket, Code2, GraduationCap,
-  CheckCircle, ExternalLink, ChevronDown, ChevronUp,
+  CheckCircle, ExternalLink,
 } from "lucide-react";
 
 // ── Data ──────────────────────────────────────────────────────────────────────
@@ -164,7 +164,6 @@ function ExperienceCard({
 }) {
   const ref = useRef(null);
   const isInView = useInView(ref, { once: true, margin: "-80px" });
-  const [open, setOpen] = useState(false);
 
   return (
     <div ref={ref} className={`flex mb-16 relative ${isLeft ? "justify-end" : "justify-start"}`}>
@@ -178,8 +177,7 @@ function ExperienceCard({
       >
         <motion.div
           whileHover={{ y: -4 }}
-          onClick={() => setOpen(!open)}
-          className="glass rounded-2xl p-5 border cursor-pointer relative overflow-hidden
+          className="glass rounded-2xl p-5 border relative overflow-hidden
                      border-white/20 dark:border-white/10
                      hover:border-indigo-400/30 transition-all group"
         >
@@ -195,7 +193,7 @@ function ExperienceCard({
                   style={{ color: "rgb(var(--text-primary))" }}>
                   {exp.title}
                 </h3>
-                <span className={`px-2 py-0.5 text-[10px] font-bold rounded-full border
+                <span className={`px-2 py-0.5 text-[10px] font-medium rounded-full border
                                   whitespace-nowrap ${exp.badgeStyle}`}>
                   {exp.badge}
                 </span>
@@ -217,9 +215,6 @@ function ExperienceCard({
 
           {/* Achievements */}
           <div className="mb-4 pl-4">
-            <p className={`text-xs font-bold uppercase tracking-wider mb-2 ${exp.accentColor}`}>
-              Key Achievements
-            </p>
             <ul className="space-y-1.5">
               {exp.achievements.map((a, i) => (
                 <motion.li
@@ -247,7 +242,7 @@ function ExperienceCard({
                 {exp.projects.map((p, i) => (
                   <div key={i} className="flex items-center gap-1.5">
                     <span className="text-xs" style={{ color: "rgb(var(--text-tertiary))" }}>
-                      → {p.name}
+                      {p.name}
                     </span>
                     {p.url && (
                       <a
@@ -266,35 +261,22 @@ function ExperienceCard({
             </div>
           )}
 
-          {/* Expandable focus areas */}
+          {/* Focus areas — always visible */}
           {"focus" in exp && exp.focus && (
-            <>
-              <motion.div
-                initial={false}
-                animate={{ height: open ? "auto" : 0, opacity: open ? 1 : 0 }}
-                transition={{ duration: 0.25 }}
-                className="overflow-hidden pl-4"
-              >
-                <p className="text-xs font-bold uppercase tracking-wider mb-2 text-indigo-500">
-                  Focus Areas
-                </p>
-                <ul className="space-y-1 mb-3">
-                  {exp.focus.map((f, i) => (
-                    <li key={i} className="text-xs flex items-center gap-1.5"
-                      style={{ color: "rgb(var(--text-tertiary))" }}>
-                      <span className="text-indigo-400">▸</span> {f}
-                    </li>
-                  ))}
-                </ul>
-              </motion.div>
-              <button
-                onClick={(e) => { e.stopPropagation(); setOpen(!open); }}
-                className="flex items-center gap-1 text-xs font-medium pl-4 mt-1
-                           text-indigo-500 hover:text-indigo-400 transition-colors"
-              >
-                {open ? <><ChevronUp size={12} /> Show Less</> : <><ChevronDown size={12} /> Show More</>}
-              </button>
-            </>
+            <div className="pl-4 mb-4">
+              <p className="text-xs font-semibold uppercase tracking-wider mb-2 text-indigo-500">
+                Focus Areas
+              </p>
+              <ul className="space-y-1">
+                {exp.focus.map((f, i) => (
+                  <li key={i} className="text-xs flex items-center gap-1.5"
+                    style={{ color: "rgb(var(--text-tertiary))" }}>
+                    <span className="w-1 h-1 rounded-full bg-indigo-400 flex-shrink-0" />
+                    {f}
+                  </li>
+                ))}
+              </ul>
+            </div>
           )}
 
           {/* Tech stack pills */}
