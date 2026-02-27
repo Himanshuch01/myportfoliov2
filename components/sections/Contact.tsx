@@ -123,11 +123,11 @@ export default function Contact() {
           </div>
 
           <h2 className="text-4xl md:text-5xl font-bold mb-4 leading-tight">
-            Let&apos;s Build Something{" "}
-            <span className="gradient-text">Great Together</span>
+            Have a project{" "}
+            <span className="gradient-text">in mind?</span>
           </h2>
           <p className="text-sm leading-relaxed" style={{ color: "rgb(var(--text-tertiary))" }}>
-            Open to freelance projects, full-time roles, and exciting collaborations.
+            I'm open to freelance work, full-time roles, and interesting collaborations. Drop a message and I'll get back to you within 24 hours.
           </p>
         </motion.div>
 
@@ -337,9 +337,8 @@ export default function Contact() {
                   whileHover={!isSubmitting && !isSuccess ? { scale: 1.01 } : {}}
                   whileTap={!isSubmitting && !isSuccess ? { scale: 0.98 } : {}}
                   className="w-full py-3.5 rounded-xl font-semibold text-sm text-white
-                             bg-gradient-to-r from-indigo-600 to-purple-600
-                             shadow-lg shadow-indigo-500/25 hover:shadow-indigo-500/40
-                             disabled:opacity-70 transition-all duration-300
+                             bg-indigo-600 hover:bg-indigo-700
+                             disabled:opacity-70 transition-colors duration-200
                              flex items-center justify-center gap-2"
                 >
                   {isSubmitting ? (

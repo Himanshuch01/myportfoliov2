@@ -101,10 +101,10 @@ export default function Skills() {
             What I work with
           </span>
           <h2 className="text-3xl md:text-4xl font-bold mb-3">
-            Tech Stack{" "}
+            Technologies{" "}
             <span className="bg-clip-text text-transparent
                              bg-gradient-to-r from-violet-500 to-indigo-500">
-              Arsenal
+              I Use
             </span>
           </h2>
           <p className="text-sm" style={{ color: "rgb(var(--text-tertiary))" }}>

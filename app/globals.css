@@ -42,6 +42,7 @@
   body {
     @apply antialiased;
     font-family: var(--font-inter);
+    font-size: 17px;
     background-color: rgb(var(--bg-primary));
     color: rgb(var(--text-primary));
     transition: background-color 0.3s ease, color 0.3s ease;
@@ -57,12 +58,12 @@
   }
 
   ::-webkit-scrollbar-thumb {
-    background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
+    background: #6366f1;
     border-radius: 10px;
   }
 
   ::-webkit-scrollbar-thumb:hover {
-    background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%);
+    background: #4f46e5;
   }
 
   /* Selection */
@@ -99,9 +100,9 @@
     border: 1px solid rgba(var(--border-color), 0.15);
   }
 
-  /* Gradient text - Vibrant */
+  /* Gradient text - Subtle */
   .gradient-text {
-    @apply bg-clip-text text-transparent bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500;
+    @apply bg-clip-text text-transparent bg-gradient-to-r from-indigo-600 to-indigo-400;
   }
 
   /* Container */
@@ -111,23 +112,22 @@
 
   /* Button styles - Modern & Clean */
   .btn-primary {
-    @apply px-6 py-3 bg-gradient-to-r from-indigo-600 to-purple-600 text-white rounded-xl font-medium shadow-lg shadow-indigo-500/30 hover:shadow-xl hover:shadow-indigo-500/40 transition-all duration-300 hover:scale-105 active:scale-95;
+    @apply px-6 py-3 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg font-medium transition-colors duration-200;
   }
 
   .btn-secondary {
     background: rgba(var(--bg-tertiary), 1);
-    @apply px-6 py-3 rounded-xl font-medium transition-all duration-300 hover:scale-105 active:scale-95;
+    @apply px-6 py-3 rounded-lg font-medium transition-colors duration-200;
     color: rgb(var(--text-primary));
     border: 1px solid rgba(var(--border-color), 0.5);
   }
 
   .btn-secondary:hover {
     background: rgba(var(--bg-secondary), 1);
-    box-shadow: 0 4px 12px rgba(var(--shadow-color), 0.1);
   }
 
   .btn-outline {
-    @apply px-6 py-3 border-2 border-indigo-500 rounded-xl font-medium hover:bg-indigo-500 hover:text-white transition-all duration-300 hover:scale-105 active:scale-95;
+    @apply px-6 py-3 border border-indigo-500 rounded-lg font-medium hover:bg-indigo-600 hover:text-white hover:border-indigo-600 transition-colors duration-200;
     color: rgb(var(--text-secondary));
   }
 
@@ -135,17 +135,16 @@
   .card {
     background: rgba(var(--bg-primary), 1);
     border: 1px solid rgba(var(--border-color), 0.5);
-    @apply rounded-2xl p-6 transition-all duration-300 hover:scale-[1.02];
+    @apply rounded-xl p-6 transition-all duration-200;
     box-shadow: 0 1px 3px rgba(var(--shadow-color), 0.05);
   }
 
   .card:hover {
-    box-shadow: 0 10px 30px rgba(var(--shadow-color), 0.1);
-    border-color: rgba(99, 102, 241, 0.3);
+    box-shadow: 0 4px 12px rgba(var(--shadow-color), 0.08);
   }
 
   .dark .card:hover {
-    box-shadow: 0 10px 30px rgba(99, 102, 241, 0.2);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
   }
 
   .card-dark {
@@ -156,24 +155,24 @@
 
   /* Section padding */
   .section-padding {
-    @apply py-20 md:py-32;
+    @apply py-24 md:py-36;
   }
 
   /* Heading styles */
   .heading-1 {
-    @apply text-4xl md:text-6xl lg:text-7xl font-bold tracking-tight;
+    @apply text-4xl md:text-6xl lg:text-7xl font-bold;
   }
 
   .heading-2 {
-    @apply text-3xl md:text-5xl lg:text-6xl font-bold tracking-tight;
+    @apply text-3xl md:text-5xl lg:text-6xl font-bold;
   }
 
   .heading-3 {
-    @apply text-2xl md:text-4xl lg:text-5xl font-bold tracking-tight;
+    @apply text-2xl md:text-4xl lg:text-5xl font-bold;
   }
 
   .heading-4 {
-    @apply text-xl md:text-2xl lg:text-3xl font-bold tracking-tight;
+    @apply text-xl md:text-2xl lg:text-3xl font-semibold;
   }
 
   /* Glow effects - Subtle */

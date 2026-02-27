@@ -1,7 +1,7 @@
 "use client";
 
 import { motion, useMotionValue, useSpring } from "framer-motion";
-import { ArrowDown, Award, Zap, Code2 } from "lucide-react";
+import { ArrowDown } from "lucide-react";
 import FloatingGeometry from "@/components/3d/FloatingGeometry";
 import { useEffect, useRef, useState } from "react";
 
@@ -34,8 +34,7 @@ function AnimatedCounter({ end, suffix = "" }: { end: number; suffix?: string })
   }, [seen, end]);
 
   return (
-    <div ref={ref} className="text-2xl font-bold bg-clip-text text-transparent
-                              bg-gradient-to-r from-indigo-500 to-purple-500">
+    <div ref={ref} className="text-2xl font-bold" style={{ color: "rgb(var(--text-primary))" }}>
       {count}{suffix}
     </div>
   );
@@ -75,13 +74,13 @@ function MagneticButton({
       whileHover={{ scale: 1.05 }}
       whileTap={{ scale: 0.95 }}
       className={primary
-        ? "inline-flex items-center justify-center whitespace-nowrap px-7 py-3 rounded-2xl \
-           bg-gradient-to-r from-indigo-600 to-purple-600 text-white font-semibold text-sm \
-           shadow-lg shadow-indigo-500/30 hover:shadow-indigo-500/50 transition-shadow"
-        : "inline-flex items-center justify-center whitespace-nowrap px-7 py-3 rounded-2xl \
-           font-semibold text-sm transition-all border-2 border-indigo-400/40 \
-           text-indigo-600 dark:text-indigo-300 \
-           hover:bg-indigo-50 dark:hover:bg-indigo-900/20 hover:border-indigo-500"
+        ? "inline-flex items-center justify-center whitespace-nowrap px-7 py-3 rounded-xl \
+           bg-indigo-600 hover:bg-indigo-700 text-white font-semibold text-sm \
+           transition-colors duration-200"
+        : "inline-flex items-center justify-center whitespace-nowrap px-7 py-3 rounded-xl \
+           font-semibold text-sm transition-colors duration-200 border border-slate-300 dark:border-slate-700 \
+           text-slate-700 dark:text-slate-300 \
+           hover:bg-slate-100 dark:hover:bg-slate-800"
       }
     >
       {children}
@@ -152,44 +151,33 @@ export default function Hero() {
           >
             Himanshu
             <br />
-            <span className="bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500
-                             bg-clip-text text-transparent">
+            <span className="text-indigo-600 dark:text-indigo-400">
               Chauhan
             </span>
           </motion.h1>
 
-          {/* Roles — horizontal chips */}
-          <motion.div
+          {/* Role */}
+          <motion.p
             initial={{ opacity: 0, y: 16 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.55, delay: 0.2 }}
-            className="flex flex-wrap gap-2 mb-5"
+            className="text-base font-medium mb-5 tracking-wide"
+            style={{ color: "rgb(var(--text-secondary))" }}
           >
-            {["Full-Stack Engineer", "MERN Specialist", "AI Product Builder"].map((role) => (
-              <span
-                key={role}
-                className="px-3 py-1 rounded-lg text-sm font-medium
-                           bg-indigo-50 dark:bg-indigo-900/30
-                           text-indigo-700 dark:text-indigo-300
-                           border border-indigo-200/60 dark:border-indigo-700/40"
-              >
-                {role}
-              </span>
-            ))}
-          </motion.div>
+            Full-Stack Engineer
+          </motion.p>
 
           {/* Tagline */}
           <motion.p
             initial={{ opacity: 0, y: 16 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.55, delay: 0.28 }}
-            className="text-sm md:text-base leading-relaxed mb-8 max-w-sm"
+            className="text-base leading-relaxed mb-8 max-w-sm"
             style={{ color: "rgb(var(--text-tertiary))" }}
           >
-            Building production-grade apps that{" "}
-            <span className="text-emerald-500 font-semibold">ship</span>,{" "}
-            <span className="text-indigo-500 font-semibold">scale</span>, and create{" "}
-            <span className="text-amber-500 font-semibold">real-world impact</span>.
+            I build web apps that solve real problems. Currently working on{" "}
+            <span className="font-medium" style={{ color: "rgb(var(--text-secondary))" }}>WanderMate India</span>
+            , an AI-powered travel platform.
           </motion.p>
 
           {/* CTA buttons */}
@@ -197,38 +185,10 @@ export default function Hero() {
             initial={{ opacity: 0, y: 16 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.55, delay: 0.36 }}
-            className="flex flex-row gap-3 mb-10"
+            className="flex flex-row gap-3 mb-8"
           >
             <MagneticButton href="#projects" primary>View Projects</MagneticButton>
             <MagneticButton href="https://drive.google.com/file/d/1lSWuDZT8Xzi8lpMM9yoycfTi1Tv7TeDR/view?usp=sharing">Resume</MagneticButton>
-          </motion.div>
-
-          {/* Keyword badges */}
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ duration: 0.55, delay: 0.44 }}
-            className="flex flex-wrap gap-2 mb-10"
-          >
-            {[
-              { icon: Award, text: "Commercial Experience" },
-              { icon: Code2, text: "MERN Stack" },
-              { icon: Zap, text: "AI Integration" },
-            ].map((b, i) => (
-              <motion.span
-                key={b.text}
-                initial={{ opacity: 0, scale: 0.88 }}
-                animate={{ opacity: 1, scale: 1 }}
-                transition={{ delay: 0.5 + i * 0.07 }}
-                className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl glass
-                           hover:ring-1 hover:ring-indigo-400/30 transition-all cursor-default"
-              >
-                <b.icon size={13} className="text-indigo-500" />
-                <span className="text-xs font-medium" style={{ color: "rgb(var(--text-secondary))" }}>
-                  {b.text}
-                </span>
-              </motion.span>
-            ))}
           </motion.div>
 
           {/* Stats row */}
@@ -250,7 +210,8 @@ export default function Hero() {
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.7 + i * 0.07 }}
                 className="flex flex-col items-center text-center py-3 px-1
-                           rounded-2xl glass hover:ring-1 hover:ring-indigo-400/30 transition-all"
+                           rounded-xl border transition-all"
+                style={{ borderColor: "rgba(var(--border-color), 0.5)", background: "rgba(var(--bg-secondary), 0.6)" }}
               >
                 <AnimatedCounter end={s.end} suffix={s.suffix} />
                 <div className="text-[10px] mt-1 leading-tight whitespace-pre-line"
@@ -268,18 +229,17 @@ export default function Hero() {
       <motion.a
         href="#about"
         initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
+        animate={{ opacity: 0.5 }}
         transition={{ delay: 1.2 }}
         className="absolute bottom-8 left-[25%] -translate-x-1/2 z-10
-                   flex flex-col items-center gap-1 transition-colors"
+                   flex items-center justify-center hover:opacity-80 transition-opacity"
         style={{ color: "rgb(var(--text-tertiary))" }}
       >
-        <span className="text-[10px] font-medium tracking-widest uppercase">Scroll</span>
         <motion.div
-          animate={{ y: [0, 5, 0] }}
-          transition={{ duration: 1.8, repeat: Infinity, ease: "easeInOut" }}
+          animate={{ y: [0, 4, 0] }}
+          transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
         >
-          <ArrowDown size={15} />
+          <ArrowDown size={18} strokeWidth={1.5} />
         </motion.div>
       </motion.a>
     </section>

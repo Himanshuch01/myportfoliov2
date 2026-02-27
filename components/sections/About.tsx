@@ -5,7 +5,7 @@ import { useRef } from "react";
 import {
   Rocket, Briefcase, Zap, Target,
   Award, Star, TrendingUp, Download,
-  MapPin, Coffee, GitBranch, Layers,
+  MapPin, GitBranch, Layers,
 } from "lucide-react";
 
 const differentiators = [
@@ -76,7 +76,6 @@ const achievements = [
 
 const quickFacts = [
   { icon: MapPin, text: "Based in India" },
-  { icon: Coffee, text: "Fuelled by coffee & curiosity" },
   { icon: GitBranch, text: "249+ GitHub contributions" },
   { icon: Layers, text: "MERN · Next.js · AI stack" },
 ];
@@ -115,7 +114,7 @@ export default function About() {
             Get to know me
           </span>
           <h2 className="heading-2 mb-3">
-            About <span className="gradient-text">Me</span>
+            About Me
           </h2>
           <p className="max-w-xl mx-auto text-sm md:text-base" style={{ color: "rgb(var(--text-tertiary))" }}>
             Full-Stack Engineer turning ideas into scalable, real-world products.
@@ -133,18 +132,9 @@ export default function About() {
             className="lg:col-span-2"
           >
             <div className="relative group">
-              {/* Rotating conic border */}
-              <div className="absolute -inset-[2px] rounded-3xl overflow-hidden">
-                <motion.div
-                  animate={{ rotate: 360 }}
-                  transition={{ duration: 18, repeat: Infinity, ease: "linear" }}
-                  className="absolute inset-0"
-                  style={{
-                    background:
-                      "conic-gradient(from 0deg, #6366f1, #10b981, #f59e0b, #ec4899, #6366f1)",
-                  }}
-                />
-              </div>
+              {/* Static border */}
+              <div className="absolute -inset-[1px] rounded-3xl border-2
+                              border-indigo-200 dark:border-indigo-800" />
 
               {/* Card body */}
               <div
@@ -152,11 +142,9 @@ export default function About() {
                            flex flex-col items-center text-center gap-5"
               >
                 {/* Avatar */}
-                <div className="w-28 h-28 rounded-2xl flex items-center justify-center text-7xl
-                                bg-gradient-to-br from-indigo-100 to-purple-100
-                                dark:from-indigo-900/40 dark:to-purple-900/40
-                                shadow-inner">
-                  👨‍💻
+                <div className="w-28 h-28 rounded-2xl flex items-center justify-center
+                                bg-indigo-600 text-white font-black text-4xl select-none">
+                  HC
                 </div>
 
                 {/* Name & title */}
@@ -255,9 +243,9 @@ export default function About() {
               rel="noopener noreferrer"
               whileHover={{ scale: 1.04 }}
               whileTap={{ scale: 0.96 }}
-              className="inline-flex items-center gap-2.5 px-6 py-3 rounded-2xl font-semibold text-sm
-                         bg-gradient-to-r from-indigo-600 to-purple-600 text-white
-                         shadow-lg shadow-indigo-500/25 hover:shadow-indigo-500/40 transition-shadow"
+              className="inline-flex items-center gap-2.5 px-6 py-3 rounded-lg font-semibold text-sm
+                         bg-indigo-600 hover:bg-indigo-700 text-white
+                         transition-colors duration-200"
             >
               <Download size={16} />
               View Resume
@@ -266,7 +254,7 @@ export default function About() {
             {/* What Sets Me Apart — horizontal 2×2 */}
             <div>
               <h3 className="text-lg font-bold mb-5" style={{ color: "rgb(var(--text-primary))" }}>
-                What Sets Me <span className="gradient-text">Apart</span>
+                How I work
               </h3>
               <div className="grid sm:grid-cols-2 gap-4">
                 {differentiators.map((item, i) => (
